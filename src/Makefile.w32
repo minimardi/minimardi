@@ -1,0 +1,49 @@
+CC	= cl
+LD 	= link
+OPT 	= /O2 /G5 /Gr
+FLAGS	= -DWIN32
+
+#Release Build:
+
+objects =  board.obj position.obj search.obj move.obj piece.obj eval.obj \
+	move_list.obj book.obj score.obj main.obj hist.obj trans.obj utils.obj
+
+headers = main.h board.h search.h position.h eval.h move.h move_list.h \
+		piece.h book.h score.h hist.h trans.h utils.h
+
+minimardi: $(objects)
+	$(LD) /out:minimardi.exe $(objects)
+
+main.obj: main.c main.h
+	 $(CC) $(OPT) $(FLAGS) /c /out:main.obj main.c
+board.obj:	board.c piece.h
+	 $(CC) $(OPT) $(FLAGS) /c /out:board.obj board.c	
+search.obj: search.c position.h eval.h book.h trans.h move.h
+	$(CC) $(OPT) $(FLAGS) /c /out:search.obj search.c	
+position.obj: position.c position.h board.h
+	$(CC) $(OPT) $(FLAGS) /c /out:position.obj position.c
+eval.obj: eval.c position.h piece.h
+	$(CC) $(OPT) $(FLAGS) /c /out:eval.obj eval.c
+move.obj: move.c piece.h board.h move.h
+	$(CC) $(OPT) $(FLAGS) /c /out:move.obj move.c
+move_list.obj: move_list.c move.h
+	$(CC) $(OPT) $(FLAGS) /c /out:move_list.obj move_list.c
+piece.obj: piece.c piece.h
+	$(CC) $(OPT) $(FLAGS) /c /out:piece.obj piece.c
+book.obj: book.c position.h move_list.h move.h
+	$(CC) $(OPT) $(FLAGS) /c /out:book.obj book.c
+score.obj: score.c score.h
+	$(CC) $(OPT) $(FLAGS) /c /out:score.obj score.c
+hist.obj: hist.c move.h
+	$(CC) $(OPT) $(FLAGS) /c /out:hist.obj hist.c
+trans.obj: position.h
+	$(CC) $(OPT) $(FLAGS) /c /out:trans.obj trans.c
+utils.obj: utils.c utils.h
+	$(CC) $(OPT) $(FLAGS) /c /out:utils.obj utils.c
+
+all:	minimardi
+
+clean: 	
+	del *.obj
+
+#EOF	
