@@ -1,0 +1,25 @@
+The following is what I changed in my version of olipow, the suicide version.
+The line numbers may differ if you got another version, but you should be 
+able to figure it out - or ask the author of olipow for assistance. 
+
+-- Henrik Gram
+
+493d492
+<   static int firstmove = 1, onmove = 0;
+509,512c508,511
+<   if (eingabe[0]=='b') if (eingabe[1]=='l') {force=0;onmove=-1;}
+<   if (eingabe[0]=='w') if (eingabe[1]=='h') {force=0;onmove=1;}
+<   if (eingabe[0]=='g') if (eingabe[1]=='o') {compfarbe*=WECHSEL; debug=2; 
+<      numhalbz--;dran*=WECHSEL; return ;}
+---
+>   if (eingabe[0]=='b') if (eingabe[1]=='l') {compfarbe=-1;force=0;}
+>   if (eingabe[0]=='w') if (eingabe[1]=='h') {compfarbe=1;force=0;}
+>   if (eingabe[0]=='g') if (eingabe[1]=='o') { debug=2; numhalbz--;
+>       dran*=WECHSEL; return ;}
+516,521d514
+<      if (!onmove) compfarbe = (numhalbz % 2) ? 1 : -1;
+<      else if (firstmove) {
+<        compfarbe = (numhalbz % 2) ? -1 : 1;
+<        firstmove = 0;
+<        }
+<   

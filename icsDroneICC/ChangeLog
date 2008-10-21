@@ -1,0 +1,167 @@
+Version 1.5.0; Wed Oct 10 16:25 METDST 2001;
+
+* IMPORTANT:  Project renamed from RoboFICS to icsDrone and placed 
+  under a BSD license.  I intend to support more servers and provide a 
+  way for others to contribute more directly, so the project has found
+  a home on SourceForge.net.
+* Fixed a small bug in board setup as crafty doesn't support 'bd' (Thanks
+  to Gian-Carlo Pascutto for reporting this)
+* Detection of nickname; fixes case problems and needed for guest login
+* Changed softquit/restart cmds to use gameID to determine if we are
+  playing instead of seeing if the engine is running (which it would 
+  always be if we're running with the '-haveCmdNew true' option)
+* Reset the 'flag alarm' when a game has ended.
+* Added some cmds from the Zippy v2 protocol.
+* Added a special command for the FICS server to compensate for its
+  poorly written move-parser.  You would think a correct move-parser
+  is a fundamental part of a chess server, wouldn't you?
+* Fixed bug where a 'moretime' from an opponent would send the previous 
+  move to the engine one more time causing it to be confused and stall.
+* It will now attempt to 'courtesyadjourn' a game where the opponent is
+  3 minutes down on time and can't be flagged because of timeseal (he's
+  lagging).  This will stop others having to wait forever for the opponent
+  to timeout or get back.
+* Fixed a potential problem with signals.  They should be safe now.
+* Fixed replies to opponent when using say ([] needed to be stripped).
+* Totally rewrote limitRematches code.  It now uses alarm() and gets the
+  pending list from the server instead of maintaining it itself.  Currently
+  it waits a minute before accepting a challenge from the same player when
+  the limit has been met.
+* Changed the -sendGameEnd option to send the argument following the option
+  as a command to the server (instead of just 'gameend').  It also allows
+  multiple commands if you seperate them by "\n" (ie. "seek 1 0\nseek 2 0")
+* Changed the way it detects start of a new game.  Was nessesary as games
+  started using seeks weren't correctly detected.
+* Attempt to fix bad options given on commandline by interpreting some of
+  the feature cmds from the engine (if it supports them).
+* Now sends "force" cmd in addition to the "new" cmd to the engine when
+  a game has ended.  An attempt to solve a problem with crafty hanging 
+  when opponent resigned when crafty was thinking.
+* New option -autoConfigure.  If set to true, it will attempt to configure
+  itself by looking at the filename of the engine and set all engine-
+  specific options correctly.
+* New option -haveCmdPing.  If set to true, it will send a ping to the 
+  engine on startup and wait for it to respond with pong before continuing.
+  This allows the engine to complete slow initialization tasks (like TBs)
+  without icsDrone starting a game before it's actually ready for operation.
+* Added -logFile.  If logFile ends with .gz, it will use zlib to write 
+  compressed data to the log.
+
+Version 1.4.6; Thu May 21 19:45 METDST 1999;
+
+* Security fix (thanks to Marcel van Kervinck for reporting this).
+* Added "auto-flag" (thanks to Klaus Knopper for the patch).
+* Fix for a theoretical buffer overflow (thanks to David Flynn for reporting
+  this).
+* Added support for sending various commands to the server after being
+  idle for certain amount of time (check the docs).
+* Added more support for remote commands; now you are able to see the 
+  contents of its lists (check the docs).
+* Added support for sending the result of games to the engine (check the 
+  docs)
+* Added support for programs that can exit on their own (particular useful
+  for those that use the 'result' command to initiate learning and don't
+  like to be killed by RoboFICS prematurely).
+	
+Version 1.4.5; Thu Sep 17 22:15 METDST 1998;
+
+* Added fix for Crafty 15.19 and newer.  Hyatt started to use a new
+  format for displaying moves that would break older winboards and
+  naturally also robofics, eventhough it had no problem in the first
+  place.  Anyway, with some luck maybe I'll get notified next time
+  in *advance* when something like this is planned...  you think?
+  If you are reading this, then please PLEASE keep this in mind - I'd
+  appreciate it - thanks! :-)
+
+Version 1.4.4; Sun Jul  5 19:00 METDST 1998;
+
+* Owner can now give commands to the engine by prefixing it with an '*'
+* Added support for 'new' command.  Tells the computer to reset all
+  all data and be ready for a new game.  With this enabled, RoboFICS
+  won't kill the program after each game ends - but simply send 'new'.
+* Added support for 'type' command.  Tells the computer what type of
+  game this is (standard, blitz, suicide, atomic, lightning, ...). 
+  Useful for those computers that can play severel kinds of chess.
+* Fixed it so the program argument can be a string.
+* Fixed bug in move conversion.
+* Fixed a bug with owner tells introduced in last bugfix :)
+
+Version 1.4.3; Tue Apr 14 14:59 METDST 1998;
+
+* Security fix - (thanks to Andrew Tridgell for reporting this)
+* It now responds to 'says' aswell as 'tells'.
+* Playing another computer could result in a loop when exchanging 'thanks'
+  messages since they would keep responding to each other (thanks to 
+  Marcel van Kervinck for reporting this)
+* OS/2 + EMX specific StartComputer() added (thanks to William J. Little
+  for the code and reading the docs :-)
+
+Version 1.4.2; Sun Nov 30 23:43 MET 1997;
+
+* Crafty 14.1 set a new ``standard'' for sending tells/kibitzes/etc to the
+  chess server without telling anyone else on beforehand.  I now check for
+  this aswell as the old "real standard" way of doing thinks to keep
+  compatability with all the other chess computers.
+
+Version 1.4.1; Tue Aug 12 22:47 METDST 1997;
+
+* Fixed incorrect command sent to server.  It sent 'moves -l' instead of
+  'moves l'.
+* Fixed move convertion with regards to the 'longAlgMoves' feature.
+ 	
+Version 1.4;  Sat Jun 21 15:25 METDST 1997;
+
+* Accepts 'gameend' from chess programs as an fics command.  The idea is 
+  that you can then alias gameend to 'seek formula' or similar on fics.
+* Added longalgmoves support.  For programs that do not understand SAN. 
+  This requires additional support at server side - FICS v1.9 or later.
+* Added 'promote to king' to move convertion for suicide-chess computers.
+* Added support that makes it easier to control RoboFICS remotely.  It now 
+  returns status codes for the running script to catch.  See the sample
+  script.
+* Added support for wild games. (Note:  Checking for which wild type the
+  computer accepts should be done using the formula feature on the server!)
+* Removed SIGINT for craftymode - this might have caused problems with
+  crafty according to hyatt.
+* Removed "random" command for craftymode
+* Fixed the handling of void pointers in utils.c - some compilers didn't 
+  like adding a value to a void pointer since it's an unknown unit size.
+* Now checks computer input for 'draw' aswell as 'Draw' for crafty 
+  compatibility.
+	
+Version 1.3;  Fri Feb  7 00:05 MET 1997;
+
+* Added support for whisper, kibitz, say, tell
+* Added support for owner posing as computer (to set variables, formula, etc.)
+* Remote reading of messages
+* Reminds players to continue an adjourned game when they logon
+* Fixed bug with recursion that happened if computer told itself something 
+* Added feedback for draw/abort offers
+* Fixed move convertion for crafty compatibility
+* Fixed bug which made the it hang if the game was ended too soon (before 
+  receiving the movelist)
+* Added some crafty support.
+* Now attempts to read .roboficsrc file for login/passwd and additional
+  initialization commands to be sent to ics.
+
+Version 1.2;  Sat Aug 31 00:42 MET DST 1996;
+
+* First public release.
+* Major cleanup done.
+* Added support for some of gnuchess' options.
+* Fixed bug that hung the program if an opponent resigned before the first 
+  move. 
+* Rewrote argparser.
+* Added boolean args.
+
+Version 1.1;  Thu Aug 1, 15:10 MET DST 1996;
+
+* Added support for adjourned games.
+* Added commands for owner.
+* Fixed convertion of moves.
+* Fixed other minor things.
+* Added arg parser.
+
+Version 1.0;  Sun Jul 28, 22:55 MET DST 1996;
+
+* Initial version.

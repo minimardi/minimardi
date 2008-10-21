@@ -1,0 +1,286 @@
+==============================================================================
+|  icsDrone v1.5.0, (C) 1996-2001, Henrik Gram.  All rights reserved.        |
+|  See the file 'COPYRIGHT' for more legal stuff.                            |
+==============================================================================
+
+
+Description:
+
+
+  icsDrone acts as an interface between an ICS (Internet Chess Server) and
+  a chess engine.  It knows how to create games, ask people to continue any
+  adjourned games, ask for games when bored and much more.  The engine itself
+  can be administrated or configured remotely.
+
+  It talks with the chess engine using pipes and the protocol specified in
+  the protocol document.  It's a subset of the 'Chess Engine Communication
+  Protocol' available at http://www.tim-mann.org/xboard/engine-intf.html with
+  a few changes here and there.  There are plans to make icsDrone into a 
+  library that the engine can link against, but that's only on the sketchbook
+  right now.
+
+  The program was created back in '96 as a simple way to have N engines up
+  and running 24/7 without taking up a workstation or X terminal (like 
+  XBoard does) as it runs in the background.  If you instead intend to have 
+  your engine running just for some hours on you local workstation while 
+  watching it play, you might just aswell use XBoard/WinBoard.  Get it from 
+  Tim Mann's homepage at http://www.tim-mann.org/chess.html
+
+  icsDrone's homepage is at http://icsdrone.sourceforge.net - please use the
+  tools there to report bugs, request features, get support and getting the
+  latest version.  The latest version in CVS may not be stable as it's work
+  in progress, but if you want the latest and greatest...
+
+
+Compilation:
+
+
+  Usually, you would just type 'make' and it will compile just fine.  If
+  you get any errors, read the Makefile and try again.
+
+
+Supported Platforms:
+
+
+  - Unix
+      Note: Any system with POSIX signals should work just fine. 
+
+  - Windown 9x/NT/2000
+      Note: You must have cygwin installed.  Get it from: 
+            http://sources.redhat.com/cygwin  The engine(s) you wish to use
+            with it must be compiled with the cygwin gcc port aswell.
+
+  - OS/2
+      Note: You need the EMX runtime for this.  I'm not able to test this 
+            myself, but someone contributed EMX specific code and was able 
+            to get it running on OS/2. 
+
+
+Supported Chess Servers:
+
+
+  - freechess.org - everything should work.
+  - USCL - everything should work.
+  - chess.net - offspring of old FICS source - some features may work, 
+    others surely does not. 
+  - chessclub.com - some features may work, others surely does not.
+
+
+Supported Engines:  (those that are publicly available)
+
+
+  - GNUChess 4.0.pl74-80
+      Note: It's distributed under the GPL and the newest release can be
+      found at http://www.tim-mann.org/gnuchess.html and probably other 
+      sites.
+
+  - Crafty 18.x
+      Note: Created by Robert Hyatt <hyatt@cis.uab.edu>.  It's probably
+      the strongest freely available engine around and is distributed
+      in both soruce and binary form for Unix, DOS and Windows.  You 
+      cat get it from: ftp://ftp.cis.uab.edu/pub/hyatt  Be sure to 
+      enable 'craftymode' in icsDrone.
+
+  - SSEchess I and II
+      Note: It's made by Samuel Slutzky <tayx@expert.cc.purdue.edu> and
+      distributed for both Unix and Windows.  The authors site at
+      http://www.ssechess.com has been down for a while. 
+
+  - OliPow 
+      Note: This program is outdated and no longer supported by the author.
+      If you use it, you must apply the olipow-patch that comes with
+      icsDrone.  Be sure to enable 'craftymode' and 'longAlgMoves' in 
+      icsDrone.
+
+  - OliThink
+      Note: The next generation of OliPow from Oliver Brausch.  You should 
+      run it with the -haveCmdType option.  OliThink specific options are 
+      added on the command line - see its documentaion.  Get it at: 
+      http://www.phy.uni-bayreuth.de/~btp434/
+
+
+  Engines that for some reason don't work, but that I'd like to support:
+
+
+  - Chess 5.02
+      Note: This is a rewrite of gnuchess still under the GPL.  This one 
+      doesn't seem to work correctly.  I'm not sure why yet.  I seems to 
+      misunderstand the time as it's constantly taking far to long to move.  
+      You get get it at: http://www.gnu.org/software/chess/chess.html
+
+  - Sjeng 10.0
+      Note: Similar problems as above.  The source is available and can
+      be downloaded from http://sjeng.sourceforge.net
+
+
+Configuration:
+
+
+  First of all, you need to supply icsDrone with the login and password
+  needed to login to the particular server.  This can be done in one of
+  two ways:
+
+    1)  Setting environment variables FICSHANDLE and FICSPASSWD
+    2)  Putting them in the file ".icsdronerc" as the first two lines
+
+  Secondly, there are a number of commandline options you need to know.
+  These are the "General Options".  In addition, there are other options
+  that are engine specific which you may or may not need to mess with.
+  Currently the -autoConfigure option shown below is supported for 
+  GNUChess 4.x and Crafty, but I plan on adding more in future releases.
+
+
+  General Options:
+
+
+  -icsHost         defaults to "freechess.org"
+  -icsPort         defaults to 5000
+
+    Note: The address of the ICS you want to use.
+   
+  -owner           defaults to ""
+
+    Note: Tells comming from the owner are accepted as 'remote commands'
+          and those without a specific action are sent directly back to 
+          the server.
+
+          Special commands:
+
+          messages  -> Shows you its messages
+          restart   -> Restart (logout with exitcode 1) as soon as it's 
+                       done playing.
+          softquit  -> Quits (logout with exitcode 2) as soon as it's 
+                       done playing.
+          hardquit  -> Quits (logout with exitcode 3) at once.
+          =listname -> Shows you who is on its list (ie. "=notify" shows 
+                       you its notify list)
+          *         -> Anything following that will be sent directly to 
+                       the engine.  Can be used to dynamicly changed 
+                       parameters in the engine.
+
+  -console         defaults to false/off
+
+    Primarily for debugging.  It will let you type in commands in the
+    console (stdin) and those that are prefixed with 'ics:' go to the 
+    server and those prefixed with 'computer:' to go the computer.
+
+  -program         defaults to "gnuchessx"
+
+    The program to execute.
+
+  -sendGameEnd     defaults to ""
+
+    You can use this to specify a list of commands to send to the server
+    whenever a game ends.  Example: "seek 5 0\nseek 4 0\nseek 3 0"
+
+  -limitRematches  defaults to 0/off
+
+    If enabled, it will wait a minute to give other players a chance
+    to challenge it when it has played one particular person N+1 
+    times in a row. 
+
+  -sendTimeoutCmds defaults to 0/off
+  
+    If enabled, it will send the contents of ".icsdronerc-idlecmds" 
+    directly to the server when N minutes have past since previous
+    game.
+
+  -logFile         defaults to null/off
+
+    If set, it will write all output to the logfile instead of stderr.
+    If the filename ends with .gz, it will use zlib to write compressed
+    data to the log.  Note: This requires zlib to be installed on the
+    host system.
+
+  -autoConfigure   defaults to false/off
+
+    If enabled, it will look at the filename specified in the program
+    option above and determine if it knows it.  If it does, it will
+    set all options below to the correct values, and you need not
+    fiddle with them.
+
+
+  Engine Specific Options:
+
+
+  -killEngine      defaults to true/on
+
+    If true, it kills the engine after each game and starts a new one
+    when a new game starts.  You may turn this off, if you support the
+    'new' command.  Crafty users should set this to false/off.
+
+  -haveCmdNew      defaults to false/off
+
+    If true, icsDrone will send 'new' to the engine when a new game
+    starts.  The engine should initialize itself when receiving this
+    command.  Is usually combined with '-killEngine false'
+
+  -haveCmdResult   defaults to false/off
+
+    If true, icsDrone will send a result string to the engine after 
+    a game has finished.
+
+  -haveCmdType     defaults to false/off
+
+    If true, icsDrone will send the type of game to the engine.  This
+    was originally made for OliThink, and in the Zippy v2 protocol, 
+    they decided to use 'variant' for the same thing. 
+
+  -haveCmdPing     defaults to false/off
+
+    If true, icsDrone will send "ping #" to the engine upon startup.
+    This allows you to complete slow initialization tasks before icsdrone
+    starts accepting challenges.
+
+  -craftyMode      defaults to false/off
+
+    If true, icsDrone will not do some things a bit different, including
+    not sending SIGINT signals to the engine everytime it is on move.
+    All new engines need this option turned on.
+
+  -longAlgMoves    defaults to false/off
+
+    If true, icsDrone will send all moves in frfr form, but note that 
+    icsDrone does not translate moves itself, but relies on an
+    undocumented feature of the FICS server to provide this.
+
+  -searchDepth     defaults to 0/off
+
+    If set, it sends the 'set search depth' command to the engine.  This 
+    is mostly for gnuchess 4.x.
+
+  -secPerMove      defaults to 0/off       (GNUChess 4.x only)
+
+    If set, it sends the 'seconds per move' command to the engine. 
+
+  -easyMode        defaults to false/off   (GNUChess 4.x only)
+
+    When on, disables pondering (thinking in opponent's time).
+
+  -book            defaults to true/on     (GNUChess 4.x only)
+
+    If false, it will turn book usage off.
+
+  The last few options were engine specific and if you use another
+  engine, you should use whatever methods it provide.  Ie. crafty uses
+  an ".craftyrc" that can be used for this.
+
+
+Installation:
+
+  
+  You probably want to run icsDrone from a script.  This distribution
+  contains a 'sample-script.sh' file, which demonstrates how to restart 
+  icsDrone when you lose connection to the server, how to use it with
+  timeseal, how to interpret the exit values (needed for some of the
+  remote commands discussed above) and how to use logging.
+
+
+Contact:
+
+
+  You can usually reach me at hawk@freechess.org or by logging into
+  the ICS at freechess.org and look for 'Hawk'.
+
+  Visit the icsDrone homepage at http://icsdrone.sourceforge.net where
+  you can report bugs, ask for support and get the latest version.
