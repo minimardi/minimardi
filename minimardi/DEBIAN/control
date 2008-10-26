@@ -1,0 +1,10 @@
+Package: minimardi
+Version: 1.3
+Section: games
+Priority: optional
+Architecture: i386
+Depends: 
+Maintainer: Juan Pablo Fernandez <this.juan@gmail.com>
+Description:  This is a "oh no not another simple chess program" chess program.
+ It's written in C and works under Unix and Windows.
+
