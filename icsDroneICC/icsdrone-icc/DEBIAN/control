@@ -1,0 +1,9 @@
+Package: icsdrone-icc
+Version: 1.0
+Section: games
+Priority: optional
+Architecture: i386
+Depends: minimardi (>= 1.3)
+Maintainer: Juan Pablo Fernandez <this.juan@gmail.com>
+Description: A version of ICSDrone (thanks to Henrik Gram) for the Internet Chess Club.
+
