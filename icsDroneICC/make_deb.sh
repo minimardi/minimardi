@@ -11,5 +11,13 @@ chmod 755 ./icsdrone-icc/DEBIAN/*
 chmod 644 ./icsdrone-icc/DEBIAN/control
 gzip ./icsdrone-icc/usr/share/man/man1/icsdrone-icc.1
 gzip ./icsdrone-icc/usr/share/doc/icsdrone-icc/copyright
-dpkg --build icsdrone-icc ./
+
+rm -Rf ./build
+mkdir build
+cp -R ./icsdrone-icc ./build
+cd build
+find -type d | grep CVS | sed "s/^/rm -rf \"/"|sed "s/$/\"/" | sh 
+dpkg --build icsdrone-icc ./ 
+rm -Rf ./icsdrone-icc 
+cd ..
 
