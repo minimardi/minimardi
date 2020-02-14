@@ -177,6 +177,12 @@ position new_chess_position(){
  | returns: the fen chess position.                       |
   -------------------------------------------------------*/
 position new_chess_position_fen(char *fen){
+ const char* init_pos = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq";
+ if (!strncmp(init_pos, fen, strlen(init_pos)))
+ {
+  printf("is init\n");
+  return new_chess_position();
+ }
  position pos;
  int i, r;
  piece p;
