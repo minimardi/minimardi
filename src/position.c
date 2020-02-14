@@ -189,6 +189,7 @@ position new_chess_position_fen(char *fen){
   pos->whitePassant=0; 
   pos->moves_to_draw=0; 
   pos->materialcount=0;
+  pos->openingbook = fopen("Book.txt", "r");
   i = 112;
   r = 0;
   while (*fen) {
