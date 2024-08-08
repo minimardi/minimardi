@@ -16,4 +16,3 @@ find -type d | grep CVS | sed "s/^/rm -rf \"/"|sed "s/$/\"/" | sh
 dpkg --build minimardi ./
 rm -Rf ./minimardi
 cd ..
-
